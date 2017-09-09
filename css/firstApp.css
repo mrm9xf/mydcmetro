@@ -1,0 +1,15 @@
+.metro-table {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.metro-table-cell {
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+    width: 16.67%;
+    text-align: center;
+}

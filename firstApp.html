@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!-- load libraries i'll be using -->
+    <script src="js/libraries/angular.min.js"></script>
+    <script src="js/myAppModule.js"></script>
+
+    <!-- load the controllers i'll be using -->
+    <script src="js/controllers/MyFirstCtrl.js"></script>
+    <!--<script src="js/controllers/LineCtrl.js"></script>-->
+    
+    <!-- load the services i'll be using -->
+    <script src="js/factories/Lines.js"></script>
+    <script src="js/factories/LineData.js"></script>
+    <script src="js/factories/PathBtwnStations.js"></script>
+    <script src="js/factories/Prediction.js"></script>
+    
+    <!-- load the css i'll be using -->
+    <link href="css/firstApp.css" rel="stylesheet">
+  </head>
+  <body ng-app="myAppModule" ng-controller="MyFirstCtrl">
+    <table class="metro-table">
+      <thead>
+	<tr>
+	  <th class="metro-table-cell" colspan="{{ lines.length }}">Washington D.C. Metro Lines</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr>
+	  <!-- onclick = get station list -->
+	  <!--
+	  <td class="metro-table-cell"
+	      ng-repeat="line in lines"
+	      ng-click="displayLineData(line.LineCode)">{{ line.DisplayName }}</td>
+	  -->
+	  <!-- end get station list -->
+	  <!-- onclick = get path list -->
+	  <td class="metro-table-cell"
+	      ng-repeat="line in lines"
+	      ng-click="displayPathdata(line.StartStationCode, line.EndStationCode)">
+	    {{ line.DisplayName }}
+	  </td>
+	  <!-- end get path list -->
+	</tr>
+      </tbody>
+    </table>
+    <!-- for data about the line's stops -->
+    <!--
+    <div class="line-content">
+      <table class="station-table">
+	<tr>
+	  <td>Code</td>
+	  <td>Name</td>
+	</tr>
+	<tr ng-repeat="stop in lineData">
+	  <td>{{ stop.Code }}</td>
+	  <td>{{ stop.Name }}</td>
+	<tr>
+      </table>
+    </div>
+    -->
+    <!-- end data bout the line's stops -->
+    <!-- for data about the line's path -->
+    <div class="path-content">
+      <table class="path-table">
+	<tr>
+	  <td>Code</td>
+	  <td>Name</td>
+	  <td>Sequence</td>
+	</tr>
+	<tr ng-repeat="stop in pathData">
+	  <td>{{ stop.StationCode }}</td>
+	  <td>{{ stop.StationName }}</td>
+	  <td>{{ stop.SeqNum }}</td>
+	<tr>
+      </table>
+    </div>
+    <!-- end data bout the line's stops -->
+  </body>
+</html>
