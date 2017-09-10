@@ -28,18 +28,18 @@
       <tbody>
 	<tr>
 	  <!-- onclick = get station list -->
-	  <!--
 	  <td class="metro-table-cell"
 	      ng-repeat="line in lines"
 	      ng-click="displayLineData(line.LineCode)">{{ line.DisplayName }}</td>
-	  -->
 	  <!-- end get station list -->
 	  <!-- onclick = get path list -->
+	  <!--
 	  <td class="metro-table-cell"
 	      ng-repeat="line in lines"
 	      ng-click="displayPathdata(line.StartStationCode, line.EndStationCode)">
 	    {{ line.DisplayName }}
 	  </td>
+	  -->
 	  <!-- end get path list -->
 	</tr>
       </tbody>
@@ -61,6 +61,7 @@
     -->
     <!-- end data bout the line's stops -->
     <!-- for data about the line's path -->
+    <!--
     <div class="path-content">
       <table class="path-table">
 	<tr>
@@ -75,6 +76,10 @@
 	<tr>
       </table>
     </div>
+    -->
     <!-- end data bout the line's stops -->
+    <div class="random-content">
+      {{ lineData }}
+    </div>
   </body>
 </html>

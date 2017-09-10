@@ -3,15 +3,26 @@ myAppModule.controller('MyFirstCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
 	$scope.lines = response.data.Lines;
     });
 
-    $scope.lineData = displayLineData('RD');
-    
-    $scope.displayLineData = function(lineCode){
-	displayLineData(lineCode);
-    }
+    // initialize the data for the red line
+    displayLineData('RD');
 
+    $scope.displayLineData = function(lineCode){
+	$scope.lineData = displayLineData(lineCode);
+    }
+    
     function displayLineData(lineCode){
+	// create new dictionary for stop data, to be keyed by station code
+	var stopData = {}
+
+	// call the LineData api
 	LineData.getLineData(lineCode).then(function(response){
-	    $scope.lineData = response.data.Stations;
+	    // loop through the response
+	    angular.forEach(response.data.Stations, function(stopInfo){
+		// assign the station code its full stop detail
+		stopData[stopInfo.Code] = stopInfo;
+	    });
+	    // save results in lineData to be accessed while in scope
+	    $scope.lineData = stopData;
 	});
     }
 
