@@ -1,16 +1,31 @@
 myAppModule.controller('MyFirstCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnStations', 'Prediction', function($scope, Lines, LineData, PathBtwnStations, Prediction){
+    // ALL LINE DATA
     Lines.then(function(response){
-	$scope.lines = response.data.Lines;
+        // initialize dictionary of lines
+        metroLines = {};
+
+        // loop through the response
+        angular.forEach(response.data.Lines, function(metroLine){
+            metroLines[metroLine.LineCode] = {
+                'LineCode': metroLine.LineCode,
+                'StartStationCode': metroLine.StartStationCode,
+                'EndStationCode': metroLine.EndStationCode,
+                'DisplayName': metroLine.DisplayName
+            }
+        })
+
+	$scope.lines = metroLines;;
     });
 
-    // initialize the data for the red line
+    // LINE DATA
     displayLineData('RD');
 
     $scope.displayLineData = function(lineCode){
 	$scope.lineData = displayLineData(lineCode);
     }
-    
+
     function displayLineData(lineCode){
+        $scope.lineCode = lineCode;
 	// create new dictionary for stop data, to be keyed by station code
 	var stopData = {}
 
@@ -26,6 +41,7 @@ myAppModule.controller('MyFirstCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
 	});
     }
 
+    // PATH DATA (START STATION, END STATION)
     $scope.pathData = displayPathdata('A15', 'B11');
 
     $scope.displayPathdata = function(startCode, endCode){
@@ -33,14 +49,52 @@ myAppModule.controller('MyFirstCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
     }
 
     function displayPathdata(startCode, endCode) {
+        // create new list to house the stop order for the start / end supplied
+        stopList = [];
+
+        //call the path API
 	PathBtwnStations.getPathData(startCode, endCode).then(function(response){
-	    $scope.pathData = response.data.Path;
+            // loop through the response
+            angular.forEach(response.data.Path, function(pathData){
+                // push the station code into the stop list
+                stopList.push(pathData.StationCode)
+            });
+	    $scope.pathList = stopList;
+            getPrediction(stopList);
 	});
     }
 
+    // PREDICTION DATA
+    // getPrediction(['A14']);
+
     function getPrediction(lineCodeList){
-	Prediction.getPrediction(lineCodeList).then(function(response){
-	    $scope.predictionData = response.data.Trains;
+        // create new dictionary for each stop's prediction data
+        var stopPredData = {};
+
+        // call the prediction API
+	Prediction.getPredictionData(lineCodeList).then(function(response){
+            // loop through the response
+            angular.forEach(response.data.Trains, function(predData){
+                // pull out the data points I need
+                stopCode    = predData.LocationCode;
+                destCode    = predData.DestinationCode;
+                destination = predData.DestinationName;
+                time        = predData.Min;
+
+                // figure out if stopCode already in dictionary
+                if ( !(stopCode in stopPredData) ){
+                    stopPredData[stopCode] = {};
+                }
+
+                // figure out if destination already in stop's dictionary
+                if ( !(destination in stopPredData[stopCode]) ){
+                    stopPredData[stopCode][destination] = [];
+                }
+
+                stopPredData[stopCode][destination].push(time);
+            });
+
+	    $scope.predictionData = stopPredData;
 	});
     }
 }]);

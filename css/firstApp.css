@@ -13,3 +13,11 @@
     width: 16.67%;
     text-align: center;
 }
+
+.destination-cell {
+    text-align: center;
+}
+
+.destination-table {
+    display: inline;
+}
