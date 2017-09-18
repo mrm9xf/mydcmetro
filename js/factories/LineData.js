@@ -1,4 +1,4 @@
-myAppModule.factory('LineData', ['$http', function($http){
+myMetroModule.factory('LineData', ['$http', function($http){
 
     return {
 	getLineData: function(lineCode){

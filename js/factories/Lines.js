@@ -1,4 +1,4 @@
-myAppModule.factory('Lines', ['$http', function($http){
+myMetroModule.factory('Lines', ['$http', function($http){
     return $http({
 	method: 'GET',
 	url: 'https://api.wmata.com/Rail.svc/json/jLines',

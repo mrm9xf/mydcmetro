@@ -1,4 +1,4 @@
-myAppModule.factory('Prediction', ['$http', function($http){
+myMetroModule.factory('Prediction', ['$http', function($http){
     return {
 	getPredictionData: function(lineCodeList){
 	    return $http({

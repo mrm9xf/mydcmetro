@@ -1,4 +1,4 @@
-myAppModule.factory('PathBtwnStations', ['$http', function($http){
+myMetroModule.factory('PathBtwnStations', ['$http', function($http){
     return {
 	getPathData: function(startStation, endStation){
 	    return $http({

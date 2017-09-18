@@ -1,4 +1,5 @@
-myAppModule.controller('MyFirstCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnStations', 'Prediction', function($scope, Lines, LineData, PathBtwnStations, Prediction){
+myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnStations', 'Prediction', function($scope, Lines, LineData, PathBtwnStations, Prediction){
+
     // ALL LINE DATA
     Lines.then(function(response){
         // initialize dictionary of lines
