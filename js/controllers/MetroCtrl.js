@@ -1,6 +1,6 @@
 myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnStations', 'Prediction', function($scope, Lines, LineData, PathBtwnStations, Prediction){
 
-    // ALL LINE DATA
+    // PULL ALL LINE DATA
     Lines.then(function(response){
         // initialize dictionary of lines
         metroLines = {};
@@ -15,20 +15,28 @@ myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
             }
         })
 
-	$scope.lines = metroLines;;
+	$scope.lines = metroLines;
     });
 
-    // LINE DATA
-    displayLineData('RD');
+    // INITIALIZE LINE DATA TO RED LINE
+    //$scope.lineData = displayLineData('RD');
 
     $scope.displayLineData = function(lineCode){
 	$scope.lineData = displayLineData(lineCode);
     }
 
+    ///////////////
+    // FUNCTIONS //
+    ///////////////
+
+    // function to pull stop data for the line passed
     function displayLineData(lineCode){
         $scope.lineCode = lineCode;
 	// create new dictionary for stop data, to be keyed by station code
-	var stopData = {}
+	var stopData = {};
+        var startCode = metroLines[lineCode]['StartStationCode'];
+        var endCode = metroLines[lineCode]['EndStationCode'];
+        console.log(startCode, endCode);
 
 	// call the LineData api
 	LineData.getLineData(lineCode).then(function(response){
@@ -38,20 +46,21 @@ myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
 		stopData[stopInfo.Code] = stopInfo;
 	    });
 	    // save results in lineData to be accessed while in scope
-	    $scope.lineData = stopData;
 	});
+
+        return stopData;
     }
 
     // PATH DATA (START STATION, END STATION)
-    $scope.pathData = displayPathdata('A15', 'B11');
+    //$scope.pathList = displayPathdata('A15', 'B11');
 
     $scope.displayPathdata = function(startCode, endCode){
-	displayPathdata(startCode, endCode);
+	$scope.pathList = displayPathdata(startCode, endCode);
     }
 
     function displayPathdata(startCode, endCode) {
         // create new list to house the stop order for the start / end supplied
-        stopList = [];
+        var stopList = [];
 
         //call the path API
 	PathBtwnStations.getPathData(startCode, endCode).then(function(response){
@@ -60,9 +69,10 @@ myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
                 // push the station code into the stop list
                 stopList.push(pathData.StationCode)
             });
-	    $scope.pathList = stopList;
-            getPrediction(stopList);
+            $scope.predictionData = getPrediction(stopList);
 	});
+
+        return stopList;
     }
 
     // PREDICTION DATA
@@ -77,10 +87,11 @@ myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
             // loop through the response
             angular.forEach(response.data.Trains, function(predData){
                 // pull out the data points I need
-                stopCode    = predData.LocationCode;
-                destCode    = predData.DestinationCode;
-                destination = predData.DestinationName;
-                time        = predData.Min;
+                stopCode = predData.LocationCode;
+                stopName = predData.LocationName;
+                destCode = predData.DestinationCode;
+                destName = predData.DestinationName;
+                time     = predData.Min;
 
                 // figure out if stopCode already in dictionary
                 if ( !(stopCode in stopPredData) ){
@@ -88,14 +99,15 @@ myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
                 }
 
                 // figure out if destination already in stop's dictionary
-                if ( !(destination in stopPredData[stopCode]) ){
-                    stopPredData[stopCode][destination] = [];
+                if ( !(destName in stopPredData[stopCode]) ){
+                    stopPredData[stopCode][destName] = [];
                 }
 
-                stopPredData[stopCode][destination].push(time);
+                stopPredData[stopCode][destName].push(time);
             });
 
-	    $scope.predictionData = stopPredData;
 	});
+
+	return stopPredData;
     }
 }]);

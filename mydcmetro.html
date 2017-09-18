@@ -52,15 +52,15 @@
             <td class="prediction-cell">{{lineData[stationCode].Name}}</td>
             <td class="prediction-cell">
               <div>
-                <table class="destination-table" ng-repeat="(stationName, stationPrediction) in predictionData[stationCode] track by $index">
+                <table class="destination-table" ng-repeat="(stationName, stationPredictions) in predictionData[stationCode] track by $index">
                   <thead>
                     <tr>
-                      <th class="destination-header" colspan="{{stationPrediction.length}}">{{stationName}}</th>
+                      <th class="destination-header" colspan="{{stationPredictions.length}}">{{stationName}}</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td class="destination-cell" ng-repeat="pred in stationPrediction track by $index">{{pred}}</td>
+                      <td class="destination-cell" ng-repeat="pred in stationPredictions track by $index">{{pred}}</td>
                     </tr>
                   </tbody>
                 </table>
