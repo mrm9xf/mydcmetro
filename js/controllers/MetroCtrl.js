@@ -18,72 +18,46 @@ myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
 	$scope.lines = metroLines;
     });
 
-    // INITIALIZE LINE DATA TO RED LINE
-    //$scope.lineData = displayLineData('RD');
-
-    $scope.displayLineData = function(lineCode){
-	$scope.lineData = displayLineData(lineCode);
-    }
-
     ///////////////
     // FUNCTIONS //
     ///////////////
 
-    // function to pull stop data for the line passed
-    function displayLineData(lineCode){
-        $scope.lineCode = lineCode;
-	// create new dictionary for stop data, to be keyed by station code
-	var stopData = {};
-        var startCode = metroLines[lineCode]['StartStationCode'];
-        var endCode = metroLines[lineCode]['EndStationCode'];
-        console.log(startCode, endCode);
-
-	// call the LineData api
-	LineData.getLineData(lineCode).then(function(response){
-	    // loop through the response
-	    angular.forEach(response.data.Stations, function(stopInfo){
-		// assign the station code its full stop detail
-		stopData[stopInfo.Code] = stopInfo;
-	    });
-	    // save results in lineData to be accessed while in scope
-	});
-
-        return stopData;
-    }
-
-    // PATH DATA (START STATION, END STATION)
-    //$scope.pathList = displayPathdata('A15', 'B11');
-
+    // Function callable from scope in view to get route data
     $scope.displayPathdata = function(startCode, endCode){
 	$scope.pathList = displayPathdata(startCode, endCode);
     }
 
+    // Route Data
     function displayPathdata(startCode, endCode) {
         // create new list to house the stop order for the start / end supplied
         var stopList = [];
+        var stopData = [];
 
         //call the path API
 	PathBtwnStations.getPathData(startCode, endCode).then(function(response){
             // loop through the response
             angular.forEach(response.data.Path, function(pathData){
                 // push the station code into the stop list
-                stopList.push(pathData.StationCode)
+                stopList.push(pathData.StationCode);
+                stopData.push({
+                    'stationCode': pathData.StationCode,
+                    'stationName': pathData.StationName
+                });
             });
             $scope.predictionData = getPrediction(stopList);
 	});
 
-        return stopList;
+        return stopData;
     }
 
-    // PREDICTION DATA
-    // getPrediction(['A14']);
-
+    // Prediction Data
     function getPrediction(lineCodeList){
         // create new dictionary for each stop's prediction data
         var stopPredData = {};
 
         // call the prediction API
 	Prediction.getPredictionData(lineCodeList).then(function(response){
+
             // loop through the response
             angular.forEach(response.data.Trains, function(predData){
                 // pull out the data points I need
@@ -110,4 +84,10 @@ myMetroModule.controller('MetroCtrl', ['$scope', 'Lines', 'LineData', 'PathBtwnS
 
 	return stopPredData;
     }
+
+    ////////////////////////////////////////
+    // INITIALIZE PAGE TO RED LINE ONLOAD //
+    ////////////////////////////////////////
+    $scope.lineCode = 'RD';
+    $scope.pathList = displayPathdata('A15', 'B11');
 }]);
