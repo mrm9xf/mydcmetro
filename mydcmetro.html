@@ -19,7 +19,6 @@
     <link href="css/firstApp.css" rel="stylesheet">
   </head>
   <body ng-app="myMetroModule" ng-controller="MetroCtrl">
-    {{predictionData}}
     <table class="metro-table">
       <thead>
 	<tr>
@@ -53,19 +52,21 @@
             <td class="prediction-cell">{{station.stationName}}</td>
             <td class="prediction-cell">
               <div class="line-prediction" ng-repeat="(lineName, lineDests) in predictionData[station.stationCode] track by $index">
-                {{lineName}}<br>
-                <table class="destination-table" ng-repeat="(destinationName, stationPredictions) in lineDests track by $index">
-                  <thead>
-                    <tr>
-                      <th class="destination-header" colspan="{{stationPredictions.length}}">{{destinationName}}</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td class="destination-cell" ng-repeat="pred in stationPredictions track by $index">{{pred}}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div ng-if="lineName != 'No Line'">
+                  {{lineName}}<br>
+                  <table class="destination-table" ng-repeat="(destinationName, stationPredictions) in lineDests track by $index">
+                    <thead>
+                      <tr>
+                        <th class="destination-header" colspan="{{stationPredictions.length}}">{{destinationName}}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td class="destination-cell" ng-repeat="pred in stationPredictions track by $index">{{pred}}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </td>
           </tr>
