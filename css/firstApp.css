@@ -21,3 +21,7 @@
 .destination-table {
     display: inline;
 }
+
+.line-prediction {
+    text-align: center;
+}
